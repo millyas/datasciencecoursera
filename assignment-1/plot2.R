@@ -1,0 +1,15 @@
+url<-"https://d396qusza40orc.cloudfront.net/exdata%2Fdata%2Fhousehold_power_consumption.zip"
+download.file(url,destfile="./a.zip")
+library(data.table)
+nim<-read.table(unzip("./a.zip","household_power_consumption.txt"),sep=";",header=TRUE)
+nim$Date<-as.Date(nim$Date,"%d/%m/%Y")
+nim[[2]]<-as.character(nim[[2]])
+nim[[2]]<-as.ITime(nim[[2]],format="%H:%M:%S")
+x<-as.Date(c("2007-02-01","2007-02-02"))
+nim<-nim[(nim$Date==x[1])|(nim$Date==x[2]),]
+y<-as.numeric(as.character(nim[[3]]))
+x1<-as.POSIXct(paste(nim[[1]],nim[[2]]))
+png(filename="plot2.png",height=480,width=480)
+plot(x1,y,type="n",xlab="",ylab="Global Active Power (kilowatts)",cex.lab=0.75,cex.axis=0.75)
+lines(x1,y,type="l")
+graphics.off()
